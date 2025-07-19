@@ -18,6 +18,18 @@ const Index = () => {
   const handleJsonChange = (value: string) => {
     setJsonValue(value);
     setError('');
+    
+    // Automatically parse JSON when it changes
+    if (value.trim()) {
+      try {
+        const parsed = JSON.parse(value);
+        handleJsonParse(parsed);
+      } catch (e) {
+        // Invalid JSON, will be handled by JsonEditor component
+      }
+    } else {
+      setParsedConfig(null);
+    }
   };
 
   const handleJsonParse = (parsed: any) => {
@@ -138,11 +150,30 @@ const Index = () => {
                     <Button
                       variant="outline"
                       onClick={() => {
-                        const jsonEditor = document.querySelector('textarea');
-                        if (jsonEditor) {
-                          const loadExample = jsonEditor.parentElement?.parentElement?.querySelector('button[title="Load Example"]') as HTMLButtonElement;
-                          loadExample?.click();
-                        }
+                        // Load example configuration
+                        const example = {
+                          "type": "page",
+                          "title": "Contact Us", 
+                          "description": "Get in touch with our team",
+                          "elements": [
+                            { "type": "heading", "level": 2, "text": "Send us a message" },
+                            { "type": "text", "content": "We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.", "variant": "muted" },
+                            { "type": "divider" },
+                            {
+                              "type": "form",
+                              "title": "Contact Form", 
+                              "action": "/submit-contact",
+                              "children": [
+                                { "type": "input", "label": "Full Name", "name": "name", "placeholder": "Enter your full name", "required": true },
+                                { "type": "input", "label": "Email", "name": "email", "inputType": "email", "placeholder": "Enter your email address", "required": true },
+                                { "type": "input", "label": "Subject", "name": "subject", "placeholder": "What's this about?" },
+                                { "type": "spacer", "size": "sm" },
+                                { "type": "button", "text": "Send Message", "variant": "default", "action": "/submit" }
+                              ]
+                            }
+                          ]
+                        };
+                        setJsonValue(JSON.stringify(example, null, 2));
                       }}
                     >
                       Load Example Configuration

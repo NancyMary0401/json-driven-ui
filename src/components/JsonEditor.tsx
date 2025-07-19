@@ -106,6 +106,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({ value, onChange, onParse
     };
     
     onChange(JSON.stringify(example, null, 2));
+    setIsValidJson(true);
   };
 
   return (
